@@ -6,18 +6,37 @@
     <title>Pika Nation: The Living Horizon</title>
     <style>
         * { box-sizing: border-box; }
+        
         body {
             margin: 0;
-            background: url('CASTLE.PNG') no-repeat center center fixed;
+            /* PINNED CASTLE TO TOP */
+            background: url('CASTLE.PNG') no-repeat center top fixed; 
             background-size: cover;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            min-height: 100vh; text-align: center; font-family: 'Segoe UI', Arial, sans-serif; padding: 10px;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-end; /* PUSHES UI TO THE BOTTOM */
+            align-items: center;
+            min-height: 100vh; 
+            text-align: center; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            padding: 10px;
         }
+
         #gamePage { 
-            background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 15px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6); max-width: 450px; width: 100%;
-            backdrop-filter: blur(8px); position: relative;
+            /* MORE TRANSPARENT (0.85) SO THE CASTLE PEAKS THROUGH THE BLUR */
+            background: rgba(255, 255, 255, 0.85); 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
+            max-width: 450px; 
+            width: 100%;
+            backdrop-filter: blur(8px); 
+            position: relative;
+            /* FORCES EMPTY SPACE AT THE TOP FOR THE CASTLE */
+            margin-top: 250px; 
+            margin-bottom: 20px;
         }
+
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 8px; margin-bottom: 15px; }
         .stats-grid p { margin: 0; font-size: 13px; font-weight: bold; }
         
