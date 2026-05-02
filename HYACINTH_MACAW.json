@@ -1,0 +1,12 @@
+{
+  "name": "Hyacinth Macaw",
+  "rarity": "Legendary",
+  "hp": 450,
+  "atk": 150,
+  "def": 60,
+  "speed": 60,
+  "skill": "Aegis Feather",
+  "skill_description": "Reduces all damage to 0 for a short duration",
+  "skill_type": "defensive",
+  "skill_cooldown": 3
+}

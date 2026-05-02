@@ -1,0 +1,12 @@
+{
+  "name": "Black Palm Cockatoo",
+  "rarity": "Legendary",
+  "hp": 460,
+  "atk": 110,
+  "def": 85,
+  "speed": 65,
+  "skill": "Shadow Palm Fortress",
+  "skill_description": "Strengthens its defenses while releasing a crushing shockwave that damages nearby enemies",
+  "skill_type": "defensive_offensive",
+  "skill_cooldown": 4
+}

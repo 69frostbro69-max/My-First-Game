@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pika Nation: The Living Horizon</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: url('CASTLE.PNG') no-repeat center center fixed;
+            background-size: cover;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; text-align: center; font-family: 'Segoe UI', Arial, sans-serif; padding: 10px;
+        }
+        #gamePage { 
+            background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 15px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); max-width: 450px; width: 100%;
+            backdrop-filter: blur(8px); position: relative;
+        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+        .stats-grid p { margin: 0; font-size: 13px; font-weight: bold; }
+        
+        .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+        button { 
+            padding: 12px; font-size: 14px; cursor: pointer; 
+            border-radius: 8px; border: none; font-weight: bold; transition: 0.2s; width: 46%;
+        }
+        button:active { transform: scale(0.95); }
+        
+        .btn-action { background: #3498db; color: white; }
+        .btn-army { background: #c0392b; color: white; } 
+        .btn-conquer { background: #8e44ad; color: white; width: 95%; margin-top: 5px; } 
+        .btn-shop { background: #ff9800; color: white; }
+        .btn-mission { background: #27ae60; color: white; }
+        .btn-spin { background: #00bcd4; color: white; }
+        .btn-storage { background: #795548; color: white; }
+        .btn-save { background: #34495e; color: white; width: 95%; margin-top: 5px; font-size: 12px; }
+
+        #autosave-toast {
+            position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.7); color: white; padding: 5px 15px; border-radius: 20px;
+            font-size: 12px; opacity: 0; transition: 0.5s; pointer-events: none;
+        }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 600px;
+            max-height: 85vh; overflow-y: auto; position: relative;
+        }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: #666; }
+
+        .storage-container { display: flex; height: 350px; border: 1px solid #ddd; border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        .storage-left { flex: 1.2; border-right: 1px solid #ddd; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
+        .storage-right { flex: 1; overflow-y: auto; background: #f9f9f9; text-align: left; }
+        .bird-item { width: 100%; padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 13px; font-weight: bold; }
+        
+        .shop-item { background: #fdfdfd; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 8px; }
+        
+        .rare { color: #4caf50; } .super-rare { color: #2196f3; } 
+        .ultra-super-rare { color: #9c27b0; } .legend-rare { color: #ff5722; font-weight: bold; } 
+        .mythic { color: #ffd700; text-shadow: 0 0 3px rgba(0,0,0,0.3); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="gamePage">
+        <h1 style="margin:0 0 10px 0;">🏰 Pika Nation</h1>
+        <div class="stats-grid">
+            <p>💰 Gold: <span id="coins">70</span></p>
+            <p>🌟 Pika: <span id="pikaCoins">0</span></p>
+            <p>👥 Pop: <span id="civilians">2</span>/<span id="hLimit">2</span></p>
+            <p>🌍 Land: <span id="land">25</span></p>
+            <p>⚔️ Army: <span id="soldiers">0</span></p>
+            <p>🦜 Birds: <span id="birdCount">0</span></p>
+        </div>
+        <p style="margin: 5px 0; font-weight: bold;">Enemy Strength: <span id="enemyStr" style="color:#c0392b;">10</span></p>
+        
+        <div class="controls">
+            <button class="btn-action" onclick="work()">Work</button>
+            <button class="btn-action" onclick="layEgg()">Lay Egg (100c)</button>
+            <button class="btn-army" onclick="recruitSoldier()">Recruit (50c)</button>
+            <button class="btn-spin" onclick="openModal('spinModal')">🎰 Spin</button>
+            <button class="btn-shop" onclick="openModal('shopModal')">🏠 Shop</button>
+            <button class="btn-mission" onclick="openModal('missionModal')">📋 Missions</button>
+            <button class="btn-storage" onclick="openStorage()">📦 Storage</button>
+            <button class="btn-save" onclick="manualSave()">💾 Save Game</button>
+            <button class="btn-conquer" onclick="conquer()">⚔️ CONQUER ⚔️</button>
+        </div>
+        <div id="autosave-toast">Autosaved!</div>
+    </div>
+
+    <!-- Modals -->
+    <div id="shopModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('shopModal')">×</span>
+            <h2>🏠 Real Estate</h2>
+            <div class="shop-item"><b>Small</b> (2 Pop) | 200g, 5L <button onclick="buyHouse(200, 5, 2)">Buy</button></div>
+            <div class="shop-item"><b>Medium</b> (4 Pop) | 350g, 10L <button onclick="buyHouse(350, 10, 4)">Buy</button></div>
+            <div class="shop-item"><b>Large</b> (8 Pop) | 700g, 20L <button onclick="buyHouse(700, 20, 8)">Buy</button></div>
+            <div class="shop-item"><b>Mansion</b> (16 Pop) | 1500g, 40 Land & 16 Pika <button onclick="buyMansion()">Buy</button></div>
+            <button style="width:100%; background:#4caf50; color:white; margin-top:10px;" onclick="buyPikaCoins()">Buy 50 Pika (<span id="pPrice">1000</span>c)</button>
+        </div>
+    </div>
+
+    <div id="missionModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('missionModal')">×</span><h2>📋 Daily Missions</h2><p id="timer" style="font-size:12px; color:#666;">Rotating in: --:--:--</p><div id="missionList"></div></div></div>
+    <div id="spinModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('spinModal')">×</span><h2>Bird Gacha</h2><button style="width:80%; background:#00bcd4; color:white;" onclick="doSpin()">SPIN (50 Pika)</button><div id="spinResult" style="margin-top:20px; font-weight:bold;"></div></div></div>
+    <div id="storageModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('storageModal')">×</span><h2>📦 Storage</h2><div class="storage-container"><div class="storage-left" id="storageDetail"><p>Select a bird</p></div><div class="storage-right" id="fullCollection"></div></div></div></div>
+
+    <script>
+        let state = { coins: 70, pikaCoins: 0, land: 25, civilians: 2, housingSpace: 2, soldiers: 0, birds: [], pikaPrice: 1000, enemyStrength: 10, completedMissions: [], activeMissionIDs: [], lastReset: 0 };
+
+        const birdPool = {
+            rare: ["Stone Pigeon", "Swift Mynah", "Village Cockatiel", "Forest Budgie", "Scarlet Sparrow", "Moss Parakeet", "Bluecrest Lorikeet"],
+            super_rare: ["Cinder Phoenix", "Verdant Sprite Bird", "Frost Owl", "Shadow Crow", "Clockwork Avian", "Aether Falcon", "Cosmic Nightingale", "Royal Griffin"],
+            ultra_super_rare: ["African Grey", "Cockatoo", "Amazon Parrot", "Eclectus Parrot"],
+            legend_rare: ["Hyacinth Macaw", "Scarlet Macaw", "Black Palm Cockatoo"],
+            mythic: ["Celestial Pikachu"]
+        };
+
+        const missionPool = [
+            { id: 1, text: "Gold Hoarder: 1k Gold", goal: 1000, type: 'coins', reward: 20 },
+            { id: 2, text: "Commander: 10 Soldiers", goal: 10, type: 'army', reward: 30 },
+            { id: 3, text: "Bird Watcher: 5 Birds", goal: 5, type: 'birds', reward: 40 },
+            { id: 4, text: "Wealthy: 5k Gold", goal: 5000, type: 'coins', reward: 100 },
+            { id: 5, text: "General: 30 Soldiers", goal: 30, type: 'army', reward: 60 },
+            { id: 6, text: "Zookeeper: 10 Birds", goal: 10, type: 'birds', reward: 80 },
+            { id: 7, text: "Expansion: 100 Land", goal: 100, type: 'land', reward: 50 },
+            { id: 8, text: "City Builder: 10 Pop", goal: 10, type: 'pop', reward: 25 },
+            { id: 9, text: "Elite Army: 50 Soldiers", goal: 50, type: 'army', reward: 120 },
+            { id: 10, text: "Gold King: 10k Gold", goal: 10000, type: 'coins', reward: 250 },
+            { id: 11, text: "Empire: 200 Land", goal: 200, type: 'land', reward: 100 },
+            { id: 12, text: "Legend Collector: 20 Birds", goal: 20, type: 'birds', reward: 150 },
+            { id: 13, text: "Metropolis: 30 Pop", goal: 30, type: 'pop', reward: 70 },
+            { id: 14, text: "Warmonger: 100 Soldiers", goal: 100, type: 'army', reward: 200 },
+            { id: 15, text: "Land Lord: 500 Land", goal: 500, type: 'land', reward: 300 }
+        ];
+
+        function checkReset() {
+            const now = Date.now();
+            if (now - state.lastReset > 86400000) { 
+                state.activeMissionIDs = missionPool.sort(() => 0.5 - Math.random()).slice(0, 5).map(m => m.id);
+                state.completedMissions = [];
+                state.lastReset = now;
+                saveGame();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('coins').innerText = Math.floor(state.coins);
+            document.getElementById('pikaCoins').innerText = state.pikaCoins;
+            document.getElementById('land').innerText = state.land;
+            document.getElementById('civilians').innerText = state.civilians;
+            document.getElementById('hLimit').innerText = state.housingSpace;
+            document.getElementById('soldiers').innerText = state.soldiers;
+            document.getElementById('birdCount').innerText = state.birds.length;
+            document.getElementById('pPrice').innerText = state.pikaPrice;
+            document.getElementById('enemyStr').innerText = state.enemyStrength;
+        }
+
+        function saveGame(isAuto = false) { 
+            localStorage.setItem('pikaNation_Save', JSON.stringify(state)); 
+            if (isAuto) {
+                const toast = document.getElementById('autosave-toast');
+                toast.style.opacity = "1";
+                setTimeout(() => { toast.style.opacity = "0"; }, 3000);
+            }
+        }
+
+        function manualSave() { saveGame(); alert("Game Saved!"); }
+
+        function loadGame() { 
+            const saved = localStorage.getItem('pikaNation_Save');
+            if(saved) { Object.assign(state, JSON.parse(saved)); }
+            checkReset(); updateUI();
+        }
+
+        function work() { state.coins += (10 + state.civilians * 5); updateUI(); }
+        function layEgg() { if (state.coins >= 100 && state.civilians < state.housingSpace) { state.coins -= 100; state.civilians++; updateUI(); } }
+        function recruitSoldier() { if (state.coins >= 50 && state.civilians > 0) { state.coins -= 50; state.civilians--; state.soldiers++; updateUI(); } }
+        
+        function buyHouse(c, l, cap) { 
+            if (state.coins >= c && state.land >= l) { 
+                state.coins -= c; state.land -= l; state.housingSpace += cap; updateUI(); 
+            } else { alert("Insufficient Resources!"); }
+        }
+
+        function buyMansion() {
+            if (state.coins >= 1500 && state.land >= 40 && state.pikaCoins >= 16) {
+                state.coins -= 1500; state.land -= 40; state.pikaCoins -= 16; state.housingSpace += 16; updateUI();
+            } else { alert("Requires 1500g, 40 Land, and 16 Pika!"); }
+        }
+
+        function buyPikaCoins() { if (state.coins >= state.pikaPrice) { state.coins -= state.pikaPrice; state.pikaCoins += 50; state.pikaPrice *= 2; updateUI(); } }
+
+        function conquer() {
+            if (state.soldiers > state.enemyStrength) {
+                state.pikaCoins += 5; state.coins += 1000; state.land += 20;
+                state.soldiers -= Math.floor(state.soldiers * 0.2); state.enemyStrength += 10;
+                alert("VICTORY!"); updateUI();
+            } else { alert("Need more soldiers!"); }
+        }
+
+        function renderMissions() {
+            checkReset();
+            const list = document.getElementById('missionList'); list.innerHTML = "";
+            state.activeMissionIDs.forEach(id => {
+                const m = missionPool.find(x => x.id === id);
+                let cur = (m.type==='coins'?state.coins : m.type==='birds'?state.birds.length : m.type==='army'?state.soldiers : m.type==='land'?state.land : state.civilians);
+                let done = state.completedMissions.includes(m.id);
+                list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; text-align:left;">
+                    <b>${m.text}</b> (${Math.floor(cur)}/${m.goal})<br>
+                    <button onclick="claimMission(${m.id})" ${(done || cur < m.goal)?'disabled':''} style="width:100%; margin-top:5px; background:${done?'#ccc':'#27ae60'}; color:white;">
+                        ${done?'Claimed':'Claim '+m.reward+' Pika'}
+                    </button></div>`;
+            });
+        }
+
+        function claimMission(id) {
+            let m = missionPool.find(x => x.id === id);
+            state.pikaCoins += m.reward; state.completedMissions.push(id);
+            renderMissions(); updateUI(); saveGame();
+        }
+
+        function doSpin() {
+            if (state.pikaCoins < 50) return;
+            state.pikaCoins -= 50;
+            let r = Math.random() * 100, key, label;
+            if (r < 0.01) { key = "mythic"; label = "MYTHIC"; }
+            else if (r < 0.6) { key = "legend_rare"; label = "LEGEND RARE"; }
+            else if (r < 10) { key = "ultra_super_rare"; label = "ULTRA SUPER RARE"; }
+            else if (r < 40) { key = "super_rare"; label = "SUPER RARE"; }
+            else { key = "rare"; label = "RARE"; }
+            let name = birdPool[key][Math.floor(Math.random() * birdPool[key].length)];
+            state.birds.push({ name, rarity: key, rarityName: label, atk: Math.floor(Math.random()*50)+10, hp: Math.floor(Math.random()*100)+50 });
+            document.getElementById('spinResult').innerHTML = `Got: <span class="${key.replace(/_/g,"-")}">${label} ${name}</span>`;
+            updateUI();
+        }
+
+        function openStorage() {
+            openModal('storageModal');
+            document.getElementById('fullCollection').innerHTML = state.birds.map((b, i) => `<div class="bird-item" onclick="viewBird(${i})">${i+1}. ${b.name}</div>`).join('');
+        }
+
+        function viewBird(i) {
+            const b = state.birds[i];
+            const fileName = b.name.toUpperCase().replace(/ /g, "_") + ".PNG";
+            document.getElementById('storageDetail').innerHTML = `
+                <img src="${fileName}" style="max-width:140px; margin-bottom:10px;" onerror="this.src='https://via.placeholder.com/120?text=BIRD'">
+                <div style="background:#222; color:white; padding:10px; width:100%; border-radius:5px;">
+                    <b class="${b.rarity.replace(/_/g,"-")}">${b.rarityName}</b><br>${b.name}<br>⚔️ ${b.atk} | ❤️ ${b.hp}
+                </div>`;
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = "flex"; if(id==='missionModal') renderMissions(); }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+        setInterval(() => {
+            if (document.getElementById('missionModal').style.display === 'flex') {
+                let timeLeft = 86400000 - (Date.now() - state.lastReset);
+                let h = Math.floor(timeLeft / 3600000), m = Math.floor((timeLeft % 3600000) / 60000), s = Math.floor((timeLeft % 60000) / 1000);
+                document.getElementById('timer').innerText = `Rotating in: ${h}:${m}:${s}`;
+            }
+        }, 1000);
+
+        setInterval(() => { saveGame(true); }, 600000); // 10 Min Autosave
+        loadGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "Scarlet Macaw",
+  "rarity": "Legendary",
+  "hp": 430,
+  "atk": 105,
+  "def": 75,
+  "speed": 85,
+  "skill": "Crimson Sky Barrage",
+  "skill_description": "Unleashes a flurry of blazing aerial strikes that deal heavy damage to enemies with exceptional speed",
+  "skill_type": "offensive",
+  "skill_cooldown": 3
+}

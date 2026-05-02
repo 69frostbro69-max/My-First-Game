@@ -1,0 +1,11 @@
+{
+  "name": "Celestial Pikachu",
+  "rarity": "Mythic",
+  "hp": 500,
+  "atk": 120,
+  "def": 90,
+  "speed": 80,
+  "skill": "Celestial Burst",
+  "skill_description": "Deals massive damage and heals allies slightly",
+  "gacha_rate": 0.01
+}
