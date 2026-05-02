@@ -2,92 +2,132 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Pika Nation: The Living Horizon</title>
     <style>
         * { box-sizing: border-box; }
         
         body {
             margin: 0;
-            /* PINNED CASTLE TO TOP */
-            background: url('CASTLE.PNG') no-repeat center top fixed; 
-            background-size: cover;
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-end; /* PUSHES UI TO THE BOTTOM */
-            align-items: center;
-            min-height: 100vh; 
-            text-align: center; 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            padding: 10px;
+            padding: 0;
+            background-color: #2c3e50;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
-        #gamePage { 
-            /* MORE TRANSPARENT (0.85) SO THE CASTLE PEAKS THROUGH THE BLUR */
-            background: rgba(255, 255, 255, 0.85); 
-            padding: 20px; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
-            max-width: 450px; 
+        /* SECTION 1: CASTLE VIEW */
+        #hero-section {
             width: 100%;
-            backdrop-filter: blur(8px); 
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000 url('CASTLE.PNG') no-repeat center center;
+            background-size: contain;
             position: relative;
-            /* FORCES EMPTY SPACE AT THE TOP FOR THE CASTLE */
-            margin-top: 250px; 
-            margin-bottom: 20px;
         }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 8px; margin-bottom: 15px; }
-        .stats-grid p { margin: 0; font-size: 13px; font-weight: bold; }
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            color: white;
+            font-weight: bold;
+            background: rgba(111, 78, 55, 0.8);
+            padding: 12px 25px;
+            border-radius: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        /* SECTION 2: CREAM & COFFEE GAME PAGE */
+        #gamePage { 
+            background: #FFFDD0; /* Cream */
+            padding: 40px 20px; 
+            border-top: 10px solid #6F4E37; /* Coffee */
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 -15px 35px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 { color: #6F4E37; margin: 0 0 20px 0; font-size: 28px; text-shadow: 1px 1px 0px #fff; }
+
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            background: #fdfae1;
+            padding: 15px; 
+            border-radius: 12px; 
+            margin-bottom: 25px; 
+            width: 100%;
+            max-width: 450px;
+            border: 3px solid #6F4E37;
+        }
         
-        .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+        .stats-grid p { margin: 0; font-size: 14px; font-weight: bold; color: #4b3621; }
+        
+        .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 450px; }
+        
         button { 
-            padding: 12px; font-size: 14px; cursor: pointer; 
-            border-radius: 8px; border: none; font-weight: bold; transition: 0.2s; width: 46%;
+            padding: 15px; font-size: 14px; cursor: pointer; 
+            border-radius: 10px; border: none; font-weight: bold; transition: 0.2s; width: 47%;
+            color: white;
+            box-shadow: 0 4px #3d2b1d;
         }
-        button:active { transform: scale(0.95); }
         
-        .btn-action { background: #3498db; color: white; }
-        .btn-army { background: #c0392b; color: white; } 
-        .btn-conquer { background: #8e44ad; color: white; width: 95%; margin-top: 5px; } 
-        .btn-shop { background: #ff9800; color: white; }
-        .btn-mission { background: #27ae60; color: white; }
-        .btn-spin { background: #00bcd4; color: white; }
-        .btn-storage { background: #795548; color: white; }
-        .btn-save { background: #34495e; color: white; width: 95%; margin-top: 5px; font-size: 12px; }
-
-        #autosave-toast {
-            position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.7); color: white; padding: 5px 15px; border-radius: 20px;
-            font-size: 12px; opacity: 0; transition: 0.5s; pointer-events: none;
-        }
-
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 600px;
-            max-height: 85vh; overflow-y: auto; position: relative;
-        }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: #666; }
-
-        .storage-container { display: flex; height: 350px; border: 1px solid #ddd; border-radius: 10px; margin-top: 15px; overflow: hidden; }
-        .storage-left { flex: 1.2; border-right: 1px solid #ddd; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
-        .storage-right { flex: 1; overflow-y: auto; background: #f9f9f9; text-align: left; }
-        .bird-item { width: 100%; padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 13px; font-weight: bold; }
+        button:active { transform: translateY(2px); box-shadow: 0 2px #3d2b1d; }
         
-        .shop-item { background: #fdfdfd; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 8px; }
+        /* Coffee Theme Buttons */
+        .btn-action { background: #8e735b; }
+        .btn-army { background: #c0392b; } 
+        .btn-conquer { background: #6F4E37; width: 96%; margin-top: 5px; font-size: 16px; } 
+        .btn-shop { background: #d3a17e; }
+        .btn-mission { background: #5d4037; }
+        .btn-spin { background: #a1887f; }
+        .btn-storage { background: #4e342e; }
+        .btn-save { background: #2c3e50; width: 96%; margin-top: 10px; font-size: 12px; opacity: 0.9; }
+
+        /* Modals */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; }
+        .modal-content { background: #FFFDD0; padding: 25px; border: 6px solid #6F4E37; border-radius: 15px; width: 95%; max-width: 500px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 30px; cursor: pointer; color: #6F4E37; font-weight: bold; }
+
+        .storage-container { display: flex; height: 350px; border: 2px solid #6F4E37; border-radius: 10px; margin-top: 15px; overflow: hidden; background: white; }
+        .storage-left { flex: 1.2; border-right: 2px solid #6F4E37; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
+        .storage-right { flex: 1; overflow-y: auto; background: #fdfae1; text-align: left; }
+        .bird-item { width: 100%; padding: 12px; border-bottom: 1px solid #ddd; cursor: pointer; font-size: 13px; font-weight: bold; color: #4b3621; }
         
-        .rare { color: #4caf50; } .super-rare { color: #2196f3; } 
-        .ultra-super-rare { color: #9c27b0; } .legend-rare { color: #ff5722; font-weight: bold; } 
-        .mythic { color: #ffd700; text-shadow: 0 0 3px rgba(0,0,0,0.3); font-weight: bold; }
+        .shop-item { background: #fdfae1; border: 2px solid #6F4E37; padding: 12px; margin-bottom: 10px; border-radius: 8px; color: #4b3621; }
+        
+        /* Rarity Colors */
+        .rare { color: #4caf50; } 
+        .super-rare { color: #2196f3; } 
+        .ultra-super-rare { color: #9c27b0; } 
+        .legend-rare { color: #ff5722; font-weight: bold; } 
+        .mythic { color: #d4af37; text-shadow: 0 0 5px rgba(212,175,55,0.5); font-weight: bold; }
+
+        #autosave-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #6F4E37; color: white; padding: 8px 20px; border-radius: 20px; font-size: 12px; opacity: 0; transition: 0.5s; z-index: 200; }
     </style>
 </head>
 <body>
 
+    <div id="hero-section">
+        <div class="scroll-hint">Scroll Down to Enter Base ↓</div>
+    </div>
+
     <div id="gamePage">
-        <h1 style="margin:0 0 10px 0;">🏰 Pika Nation</h1>
+        <h1>🏰 Pika Nation</h1>
         <div class="stats-grid">
             <p>💰 Gold: <span id="coins">70</span></p>
             <p>🌟 Pika: <span id="pikaCoins">0</span></p>
@@ -96,8 +136,9 @@
             <p>⚔️ Army: <span id="soldiers">0</span></p>
             <p>🦜 Birds: <span id="birdCount">0</span></p>
         </div>
-        <p style="margin: 5px 0; font-weight: bold;">Enemy Strength: <span id="enemyStr" style="color:#c0392b;">10</span></p>
         
+        <p style="margin: 0 0 15px 0; font-weight: bold; color: #6F4E37;">Enemy Strength: <span id="enemyStr">10</span></p>
+
         <div class="controls">
             <button class="btn-action" onclick="work()">Work</button>
             <button class="btn-action" onclick="layEgg()">Lay Egg (100c)</button>
@@ -116,24 +157,28 @@
     <div id="shopModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('shopModal')">×</span>
-            <h2>🏠 Real Estate</h2>
-            <div class="shop-item"><b>Small</b> (2 Pop) | 200g, 5L <button onclick="buyHouse(200, 5, 2)">Buy</button></div>
-            <div class="shop-item"><b>Medium</b> (4 Pop) | 350g, 10L <button onclick="buyHouse(350, 10, 4)">Buy</button></div>
-            <div class="shop-item"><b>Large</b> (8 Pop) | 700g, 20L <button onclick="buyHouse(700, 20, 8)">Buy</button></div>
-            <div class="shop-item"><b>Mansion</b> (16 Pop) | 1500g, 40 Land & 16 Pika <button onclick="buyMansion()">Buy</button></div>
-            <button style="width:100%; background:#4caf50; color:white; margin-top:10px;" onclick="buyPikaCoins()">Buy 50 Pika (<span id="pPrice">1000</span>c)</button>
+            <h2 style="color:#6F4E37;">🏠 Real Estate</h2>
+            <div id="shopItems">
+                <div class="shop-item"><b>Small</b> (2 Pop) | 200g, 5L <button class="btn-action" style="width:60px; padding:5px;" onclick="buyHouse(200, 5, 2)">Buy</button></div>
+                <div class="shop-item"><b>Medium</b> (4 Pop) | 350g, 10L <button class="btn-action" style="width:60px; padding:5px;" onclick="buyHouse(350, 10, 4)">Buy</button></div>
+                <div class="shop-item"><b>Large</b> (8 Pop) | 700g, 20L <button class="btn-action" style="width:60px; padding:5px;" onclick="buyHouse(700, 20, 8)">Buy</button></div>
+                <div class="shop-item"><b>Mansion</b> (16 Pop) | 1500g, 40 Land & 16 Pika <button class="btn-action" style="width:60px; padding:5px;" onclick="buyMansion()">Buy</button></div>
+            </div>
+            <button style="width:100%; background:#27ae60; color:white; margin-top:10px; padding:12px; border-radius:8px;" onclick="buyPikaCoins()">Buy 50 Pika (<span id="pPrice">1000</span>c)</button>
         </div>
     </div>
 
-    <div id="missionModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('missionModal')">×</span><h2>📋 Daily Missions</h2><p id="timer" style="font-size:12px; color:#666;">Rotating in: --:--:--</p><div id="missionList"></div></div></div>
-    <div id="spinModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('spinModal')">×</span><h2>Bird Gacha</h2><button style="width:80%; background:#00bcd4; color:white;" onclick="doSpin()">SPIN (50 Pika)</button><div id="spinResult" style="margin-top:20px; font-weight:bold;"></div></div></div>
-    <div id="storageModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('storageModal')">×</span><h2>📦 Storage</h2><div class="storage-container"><div class="storage-left" id="storageDetail"><p>Select a bird</p></div><div class="storage-right" id="fullCollection"></div></div></div></div>
+    <div id="missionModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('missionModal')">×</span><h2 style="color:#6F4E37;">📋 Daily Missions</h2><p id="timer" style="font-size:12px; color:#666;">Rotating in: --:--:--</p><div id="missionList"></div></div></div>
+    
+    <div id="spinModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('spinModal')">×</span><h2 style="color:#6F4E37;">Bird Gacha</h2><button style="width:100%; background:#6F4E37; color:white; padding:15px; font-size:18px;" onclick="doSpin()">SPIN (50 Pika)</button><div id="spinResult" style="margin-top:20px; font-weight:bold; font-size:18px;"></div></div></div>
+    
+    <div id="storageModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('storageModal')">×</span><h2 style="color:#6F4E37;">📦 Storage</h2><div class="storage-container"><div class="storage-left" id="storageDetail"><p>Select a bird</p></div><div class="storage-right" id="fullCollection"></div></div></div></div>
 
     <script>
         let state = { coins: 70, pikaCoins: 0, land: 25, civilians: 2, housingSpace: 2, soldiers: 0, birds: [], pikaPrice: 1000, enemyStrength: 10, completedMissions: [], activeMissionIDs: [], lastReset: 0 };
 
         const birdPool = {
-            rare: ["Stone Pigeon", "Swift Mynah", "Village Cockatiel", "Forest Budgie", "Scarlet Sparrow", "Moss Parakeet", "Bluecrest Lorikeet"],
+            rare: ["Stone Pigeon", "Swift Mynah", "Village Cockatiel", "Forest Budgie", "Scarlet Sparrow", "Bluecrest Lorikeet"],
             super_rare: ["Cinder Phoenix", "Verdant Sprite Bird", "Frost Owl", "Shadow Crow", "Clockwork Avian", "Aether Falcon", "Cosmic Nightingale", "Royal Griffin"],
             ultra_super_rare: ["African Grey", "Cockatoo", "Amazon Parrot", "Eclectus Parrot"],
             legend_rare: ["Hyacinth Macaw", "Scarlet Macaw", "Black Palm Cockatoo"],
@@ -144,29 +189,9 @@
             { id: 1, text: "Gold Hoarder: 1k Gold", goal: 1000, type: 'coins', reward: 20 },
             { id: 2, text: "Commander: 10 Soldiers", goal: 10, type: 'army', reward: 30 },
             { id: 3, text: "Bird Watcher: 5 Birds", goal: 5, type: 'birds', reward: 40 },
-            { id: 4, text: "Wealthy: 5k Gold", goal: 5000, type: 'coins', reward: 100 },
-            { id: 5, text: "General: 30 Soldiers", goal: 30, type: 'army', reward: 60 },
-            { id: 6, text: "Zookeeper: 10 Birds", goal: 10, type: 'birds', reward: 80 },
-            { id: 7, text: "Expansion: 100 Land", goal: 100, type: 'land', reward: 50 },
-            { id: 8, text: "City Builder: 10 Pop", goal: 10, type: 'pop', reward: 25 },
-            { id: 9, text: "Elite Army: 50 Soldiers", goal: 50, type: 'army', reward: 120 },
-            { id: 10, text: "Gold King: 10k Gold", goal: 10000, type: 'coins', reward: 250 },
-            { id: 11, text: "Empire: 200 Land", goal: 200, type: 'land', reward: 100 },
-            { id: 12, text: "Legend Collector: 20 Birds", goal: 20, type: 'birds', reward: 150 },
-            { id: 13, text: "Metropolis: 30 Pop", goal: 30, type: 'pop', reward: 70 },
-            { id: 14, text: "Warmonger: 100 Soldiers", goal: 100, type: 'army', reward: 200 },
-            { id: 15, text: "Land Lord: 500 Land", goal: 500, type: 'land', reward: 300 }
+            { id: 4, text: "Expansion: 100 Land", goal: 100, type: 'land', reward: 50 },
+            { id: 5, text: "Empire: 500 Land", goal: 500, type: 'land', reward: 300 }
         ];
-
-        function checkReset() {
-            const now = Date.now();
-            if (now - state.lastReset > 86400000) { 
-                state.activeMissionIDs = missionPool.sort(() => 0.5 - Math.random()).slice(0, 5).map(m => m.id);
-                state.completedMissions = [];
-                state.lastReset = now;
-                saveGame();
-            }
-        }
 
         function updateUI() {
             document.getElementById('coins').innerText = Math.floor(state.coins);
@@ -181,7 +206,7 @@
         }
 
         function saveGame(isAuto = false) { 
-            localStorage.setItem('pikaNation_Save', JSON.stringify(state)); 
+            localStorage.setItem('pikaNation_Save_V2', JSON.stringify(state)); 
             if (isAuto) {
                 const toast = document.getElementById('autosave-toast');
                 toast.style.opacity = "1";
@@ -189,22 +214,44 @@
             }
         }
 
-        function manualSave() { saveGame(); alert("Game Saved!"); }
+        function manualSave() { saveGame(); alert("Base Progress Saved!"); }
 
         function loadGame() { 
-            const saved = localStorage.getItem('pikaNation_Save');
-            if(saved) { Object.assign(state, JSON.parse(saved)); }
+            const saved = localStorage.getItem('pikaNation_Save_V2');
+            if(saved) { 
+                let data = JSON.parse(saved);
+                Object.assign(state, data);
+            }
             checkReset(); updateUI();
         }
 
+        function checkReset() {
+            const now = Date.now();
+            if (now - state.lastReset > 86400000) { 
+                state.activeMissionIDs = missionPool.sort(() => 0.5 - Math.random()).slice(0, 3).map(m => m.id);
+                state.completedMissions = [];
+                state.lastReset = now;
+            }
+        }
+
         function work() { state.coins += (10 + state.civilians * 5); updateUI(); }
-        function layEgg() { if (state.coins >= 100 && state.civilians < state.housingSpace) { state.coins -= 100; state.civilians++; updateUI(); } }
-        function recruitSoldier() { if (state.coins >= 50 && state.civilians > 0) { state.coins -= 50; state.civilians--; state.soldiers++; updateUI(); } }
         
+        function layEgg() { 
+            if (state.coins >= 100 && state.civilians < state.housingSpace) { 
+                state.coins -= 100; state.civilians++; updateUI(); 
+            } else { alert("Need more housing space!"); }
+        }
+
+        function recruitSoldier() { 
+            if (state.coins >= 50 && state.civilians > 0) { 
+                state.coins -= 50; state.civilians--; state.soldiers++; updateUI(); 
+            } else { alert("Need civilians to recruit!"); }
+        }
+
         function buyHouse(c, l, cap) { 
             if (state.coins >= c && state.land >= l) { 
                 state.coins -= c; state.land -= l; state.housingSpace += cap; updateUI(); 
-            } else { alert("Insufficient Resources!"); }
+            } else { alert("Insufficient Gold or Land!"); }
         }
 
         function buyMansion() {
@@ -218,45 +265,36 @@
         function conquer() {
             if (state.soldiers > state.enemyStrength) {
                 state.pikaCoins += 5; state.coins += 1000; state.land += 20;
-                state.soldiers -= Math.floor(state.soldiers * 0.2); state.enemyStrength += 10;
-                alert("VICTORY!"); updateUI();
-            } else { alert("Need more soldiers!"); }
-        }
-
-        function renderMissions() {
-            checkReset();
-            const list = document.getElementById('missionList'); list.innerHTML = "";
-            state.activeMissionIDs.forEach(id => {
-                const m = missionPool.find(x => x.id === id);
-                let cur = (m.type==='coins'?state.coins : m.type==='birds'?state.birds.length : m.type==='army'?state.soldiers : m.type==='land'?state.land : state.civilians);
-                let done = state.completedMissions.includes(m.id);
-                list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; text-align:left;">
-                    <b>${m.text}</b> (${Math.floor(cur)}/${m.goal})<br>
-                    <button onclick="claimMission(${m.id})" ${(done || cur < m.goal)?'disabled':''} style="width:100%; margin-top:5px; background:${done?'#ccc':'#27ae60'}; color:white;">
-                        ${done?'Claimed':'Claim '+m.reward+' Pika'}
-                    </button></div>`;
-            });
-        }
-
-        function claimMission(id) {
-            let m = missionPool.find(x => x.id === id);
-            state.pikaCoins += m.reward; state.completedMissions.push(id);
-            renderMissions(); updateUI(); saveGame();
+                state.soldiers -= Math.floor(state.soldiers * 0.2); state.enemyStrength += 15;
+                alert("VICTORY! You claimed 20 Land and 5 Pika!"); updateUI(); saveGame();
+            } else { alert("Your army is too weak! Need more soldiers."); }
         }
 
         function doSpin() {
-            if (state.pikaCoins < 50) return;
+            if (state.pikaCoins < 50) { alert("Need 50 Pika to spin!"); return; }
             state.pikaCoins -= 50;
+            
             let r = Math.random() * 100, key, label;
+            
+            // Precise Probabilities from Ledger
             if (r < 0.01) { key = "mythic"; label = "MYTHIC"; }
             else if (r < 0.6) { key = "legend_rare"; label = "LEGEND RARE"; }
             else if (r < 10) { key = "ultra_super_rare"; label = "ULTRA SUPER RARE"; }
             else if (r < 40) { key = "super_rare"; label = "SUPER RARE"; }
             else { key = "rare"; label = "RARE"; }
+            
             let name = birdPool[key][Math.floor(Math.random() * birdPool[key].length)];
-            state.birds.push({ name, rarity: key, rarityName: label, atk: Math.floor(Math.random()*50)+10, hp: Math.floor(Math.random()*100)+50 });
-            document.getElementById('spinResult').innerHTML = `Got: <span class="${key.replace(/_/g,"-")}">${label} ${name}</span>`;
+            state.birds.push({ 
+                name, 
+                rarity: key, 
+                rarityName: label, 
+                atk: Math.floor(Math.random()*50)+10, 
+                hp: Math.floor(Math.random()*100)+50 
+            });
+            
+            document.getElementById('spinResult').innerHTML = `Pulled: <span class="${key.replace(/_/g,"-")}">${label} ${name}</span>`;
             updateUI();
+            saveGame();
         }
 
         function openStorage() {
@@ -269,23 +307,53 @@
             const fileName = b.name.toUpperCase().replace(/ /g, "_") + ".PNG";
             document.getElementById('storageDetail').innerHTML = `
                 <img src="${fileName}" style="max-width:140px; margin-bottom:10px;" onerror="this.src='https://via.placeholder.com/120?text=BIRD'">
-                <div style="background:#222; color:white; padding:10px; width:100%; border-radius:5px;">
-                    <b class="${b.rarity.replace(/_/g,"-")}">${b.rarityName}</b><br>${b.name}<br>⚔️ ${b.atk} | ❤️ ${b.hp}
+                <div style="background:#4b3621; color:white; padding:10px; width:100%; border-radius:8px; font-size:12px;">
+                    <b class="${b.rarity.replace(/_/g,"-")}">${b.rarityName}</b><br>
+                    <span style="font-size:16px;">${b.name}</span><br>
+                    <div style="margin-top:5px; color:#f1c40f;">★★★★★★★</div>
+                    ⚔️ ${b.atk} | ❤️ ${b.hp}
                 </div>`;
         }
 
-        function openModal(id) { document.getElementById(id).style.display = "flex"; if(id==='missionModal') renderMissions(); }
+        function renderMissions() {
+            const list = document.getElementById('missionList'); list.innerHTML = "";
+            state.activeMissionIDs.forEach(id => {
+                const m = missionPool.find(x => x.id === id);
+                let cur = (m.type==='coins'?state.coins : m.type==='birds'?state.birds.length : m.type==='army'?state.soldiers : state.land);
+                let done = state.completedMissions.includes(m.id);
+                list.innerHTML += `<div class="shop-item">
+                    <b>${m.text}</b> (${Math.floor(cur)}/${m.goal})<br>
+                    <button onclick="claimMission(${m.id})" ${(done || cur < m.goal)?'disabled':''} style="width:100%; margin-top:5px; background:${done?'#ccc':'#27ae60'};">
+                        ${done?'Claimed':'Claim '+m.reward+' Pika'}
+                    </button></div>`;
+            });
+        }
+
+        function claimMission(id) {
+            let m = missionPool.find(x => x.id === id);
+            state.pikaCoins += m.reward; state.completedMissions.push(id);
+            renderMissions(); updateUI(); saveGame();
+        }
+
+        function openModal(id) { 
+            document.getElementById(id).style.display = "flex"; 
+            if(id==='missionModal') renderMissions(); 
+        }
+        
         function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
+        // Core Timers
         setInterval(() => {
             if (document.getElementById('missionModal').style.display === 'flex') {
                 let timeLeft = 86400000 - (Date.now() - state.lastReset);
                 let h = Math.floor(timeLeft / 3600000), m = Math.floor((timeLeft % 3600000) / 60000), s = Math.floor((timeLeft % 60000) / 1000);
-                document.getElementById('timer').innerText = `Rotating in: ${h}:${m}:${s}`;
+                document.getElementById('timer').innerText = `Rotating in: ${h}h ${m}m ${s}s`;
             }
         }, 1000);
 
-        setInterval(() => { saveGame(true); }, 600000); // 10 Min Autosave
+        setInterval(() => { saveGame(true); }, 300000); // 5 Min Autosave
+        
+        // Boot Game
         loadGame();
     </script>
 </body>
