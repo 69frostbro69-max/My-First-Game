@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>Pika Nation: The Living Horizon</title>
     <style>
@@ -18,7 +18,6 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* SECTION 1: CASTLE VIEW */
         #hero-section {
             width: 100%;
             height: 100vh;
@@ -47,11 +46,10 @@
             60% {transform: translateY(-5px);}
         }
 
-        /* SECTION 2: CREAM & COFFEE GAME PAGE */
         #gamePage { 
-            background: #FFFDD0; /* Cream */
+            background: #FFFDD0;
             padding: 40px 20px; 
-            border-top: 10px solid #6F4E37; /* Coffee */
+            border-top: 10px solid #6F4E37;
             width: 100%;
             min-height: 100vh;
             display: flex;
@@ -90,7 +88,6 @@
         
         button:active { transform: translateY(2px); box-shadow: 0 2px #3d2b1d; }
         
-        /* Coffee Theme Buttons */
         .btn-action { background: #8e735b; }
         .btn-army { background: #c0392b; } 
         .btn-conquer { background: #6F4E37; width: 96%; margin-top: 5px; font-size: 16px; } 
@@ -102,22 +99,36 @@
 
         /* Modals */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: #FFFDD0; padding: 25px; border: 6px solid #6F4E37; border-radius: 15px; width: 95%; max-width: 500px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .modal-content { background: #FFFDD0; padding: 25px; border: 6px solid #6F4E37; border-radius: 15px; width: 95%; max-width: 550px; max-height: 90vh; overflow-y: auto; position: relative; }
         .close-btn { position: absolute; top: 10px; right: 15px; font-size: 30px; cursor: pointer; color: #6F4E37; font-weight: bold; }
 
-        .storage-container { display: flex; height: 350px; border: 2px solid #6F4E37; border-radius: 10px; margin-top: 15px; overflow: hidden; background: white; }
-        .storage-left { flex: 1.2; border-right: 2px solid #6F4E37; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
-        .storage-right { flex: 1; overflow-y: auto; background: #fdfae1; text-align: left; }
-        .bird-item { width: 100%; padding: 12px; border-bottom: 1px solid #ddd; cursor: pointer; font-size: 13px; font-weight: bold; color: #4b3621; }
-        
+        /* Mission Styles */
+        .mission-header { background: #6F4E37; color: white; padding: 8px 12px; border-radius: 5px; margin-top: 20px; font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; }
         .shop-item { background: #fdfae1; border: 2px solid #6F4E37; padding: 12px; margin-bottom: 10px; border-radius: 8px; color: #4b3621; }
+
+        /* Storage Styles (BIG CARD UPGRADE) */
+        .storage-container { display: flex; height: 480px; border: 3px solid #6F4E37; border-radius: 15px; margin-top: 15px; overflow: hidden; background: #fdfae1; }
+        .storage-left { flex: 1.6; border-right: 3px solid #6F4E37; display: flex; flex-direction: column; align-items: center; padding: 20px; background: #FFFDD0; }
+        .storage-right { flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; padding: 10px; background: #fdfae1; align-content: start; }
         
+        .card-image-box { width: 100%; aspect-ratio: 1; border: 4px solid #6F4E37; border-radius: 12px; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .card-image-box img { width: 100%; height: 100%; object-fit: contain; }
+
+        .bird-tile { aspect-ratio: 1; border: 2px solid #8e735b; border-radius: 8px; background: #fff; cursor: pointer; overflow: hidden; }
+        .bird-tile img { width: 100%; height: 100%; object-fit: cover; }
+
         /* Rarity Colors */
         .rare { color: #4caf50; } 
         .super-rare { color: #2196f3; } 
         .ultra-super-rare { color: #9c27b0; } 
         .legend-rare { color: #ff5722; font-weight: bold; } 
         .mythic { color: #d4af37; text-shadow: 0 0 5px rgba(212,175,55,0.5); font-weight: bold; }
+        
+        .tile-rare { border-color: #4caf50; }
+        .tile-super-rare { border-color: #2196f3; }
+        .tile-ultra-super-rare { border-color: #9c27b0; }
+        .tile-legend-rare { border-color: #ff5722; box-shadow: inset 0 0 5px #ff5722; }
+        .tile-mythic { border-color: #d4af37; box-shadow: 0 0 8px #d4af37; }
 
         #autosave-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #6F4E37; color: white; padding: 8px 20px; border-radius: 20px; font-size: 12px; opacity: 0; transition: 0.5s; z-index: 200; }
     </style>
@@ -132,7 +143,7 @@
         <h1>🏰 Pika Nation</h1>
         <div class="stats-grid">
             <p>💰 Gold: <span id="coins">70</span></p>
-            <p>🌟 Pika: <span id="pikaCoins">0</span></p>
+            <p>🌟 Pika: <span id="pikaCoins">500</span></p>
             <p>👥 Pop: <span id="civilians">2</span>/<span id="hLimit">2</span></p>
             <p>🌍 Land: <span id="land">25</span></p>
             <p>⚔️ Army: <span id="soldiers">0</span></p>
@@ -170,14 +181,40 @@
         </div>
     </div>
 
-    <div id="missionModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('missionModal')">×</span><h2 style="color:#6F4E37;">📋 Daily Missions</h2><p id="timer" style="font-size:12px; color:#666;">Rotating in: --:--:--</p><div id="missionList"></div></div></div>
+    <div id="missionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('missionModal')">×</span>
+            <h2 style="color:#6F4E37;">📋 Mission Center</h2>
+            <div id="missionList"></div>
+        </div>
+    </div>
     
     <div id="spinModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('spinModal')">×</span><h2 style="color:#6F4E37;">Bird Gacha</h2><button style="width:100%; background:#6F4E37; color:white; padding:15px; font-size:18px;" onclick="doSpin()">SPIN (50 Pika)</button><div id="spinResult" style="margin-top:20px; font-weight:bold; font-size:18px;"></div></div></div>
     
-    <div id="storageModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('storageModal')">×</span><h2 style="color:#6F4E37;">📦 Storage</h2><div class="storage-container"><div class="storage-left" id="storageDetail"><p>Select a bird</p></div><div class="storage-right" id="fullCollection"></div></div></div></div>
+    <div id="storageModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-btn" onclick="closeModal('storageModal')">×</span>
+            <h2 style="color:#6F4E37; margin-bottom:10px;">📦 Bird Collection</h2>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <button onclick="renderStorageGrid('default')" style="width:auto; padding:5px 10px; font-size:11px; background:#8e735b;">Newest</button>
+                <button onclick="renderStorageGrid('rarity')" style="width:auto; padding:5px 10px; font-size:11px; background:#6F4E37;">By Rarity</button>
+            </div>
+            <div class="storage-container">
+                <div class="storage-left" id="storageDetail">
+                    <p style="margin-top:50%; color:#6F4E37; font-weight:bold;">Tap a bird to inspect</p>
+                </div>
+                <div class="storage-right" id="fullCollection"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        let state = { coins: 70, pikaCoins: 0, land: 25, civilians: 2, housingSpace: 2, soldiers: 0, birds: [], pikaPrice: 1000, enemyStrength: 10, completedMissions: [], activeMissionIDs: [], lastReset: 0 };
+        let state = { 
+            coins: 70, pikaCoins: 500, land: 25, civilians: 2, housingSpace: 2, soldiers: 0, birds: [], pikaPrice: 1000, 
+            enemyStrength: 10, completedMissions: [], 
+            activeHourlyIDs: [], activeDailyIDs: [], activeWeeklyIDs: [],
+            lastHourlyReset: 0, lastDailyReset: 0, lastWeeklyReset: 0 
+        };
 
         const birdPool = {
             rare: ["Stone Pigeon", "Swift Mynah", "Village Cockatiel", "Forest Budgie", "Scarlet Sparrow", "Bluecrest Lorikeet"],
@@ -187,13 +224,47 @@
             mythic: ["Celestial Pikachu"]
         };
 
-        const missionPool = [
-            { id: 1, text: "Gold Hoarder: 1k Gold", goal: 1000, type: 'coins', reward: 20 },
-            { id: 2, text: "Commander: 10 Soldiers", goal: 10, type: 'army', reward: 30 },
-            { id: 3, text: "Bird Watcher: 5 Birds", goal: 5, type: 'birds', reward: 40 },
-            { id: 4, text: "Expansion: 100 Land", goal: 100, type: 'land', reward: 50 },
-            { id: 5, text: "Empire: 500 Land", goal: 500, type: 'land', reward: 300 }
-        ];
+        const missionPool = {
+            hourly: [
+                { id: 101, text: "Quick Cash", goal: 400, type: 'coins', reward: 5 },
+                { id: 102, text: "Scout Party", goal: 8, type: 'army', reward: 10 },
+                { id: 103, text: "Survey Land", goal: 15, type: 'land', reward: 10 },
+                { id: 104, text: "Rapid Laying", goal: 1, type: 'civilians', reward: 8 },
+                { id: 105, text: "Pika Reserve", goal: 10, type: 'pikaCoins', reward: 5 },
+                { id: 106, text: "Small Grind", goal: 600, type: 'coins', reward: 12 },
+                { id: 107, text: "Frontier Push", goal: 20, type: 'land', reward: 15 },
+                { id: 108, text: "Draft Day", goal: 10, type: 'army', reward: 12 },
+                { id: 109, text: "Gold Rush", goal: 800, type: 'coins', reward: 15 },
+                { id: 110, text: "Bird Spotting", goal: 1, type: 'birds', reward: 10 },
+                { id: 111, text: "Housing Check", goal: 5, type: 'hLimit', reward: 10 },
+                { id: 112, text: "Quick Gacha", goal: 1, type: 'birds', reward: 5 }
+            ],
+            daily: [
+                { id: 201, text: "Bird Collector", goal: 4, type: 'birds', reward: 40 },
+                { id: 202, text: "Soldier Drill", goal: 40, type: 'army', reward: 60 },
+                { id: 203, text: "Local Merchant", goal: 3000, type: 'coins', reward: 55 },
+                { id: 204, text: "Village Growth", goal: 15, type: 'civilians', reward: 50 },
+                { id: 205, text: "Border Patrol", goal: 150, type: 'land', reward: 70 },
+                { id: 206, text: "Luck of the Draw", goal: 6, type: 'birds', reward: 80 },
+                { id: 207, text: "Iron Shield", goal: 60, type: 'army', reward: 100 },
+                { id: 208, text: "Golden Treasury", goal: 5000, type: 'coins', reward: 90 },
+                { id: 209, text: "Pika Savings", goal: 150, type: 'pikaCoins', reward: 40 },
+                { id: 210, text: "Land Surveyor", goal: 200, type: 'land', reward: 85 },
+                { id: 211, text: "Property Tycoon", goal: 30, type: 'hLimit', reward: 110 },
+                { id: 212, text: "Baby Boom", goal: 20, type: 'civilians', reward: 65 },
+                { id: 213, text: "The Great Flight", goal: 8, type: 'birds', reward: 120 },
+                { id: 214, text: "War Council", goal: 75, type: 'army', reward: 130 },
+                { id: 215, text: "Royal Tax", goal: 7000, type: 'coins', reward: 150 }
+            ],
+            weekly: [
+                { id: 301, text: "Empire Myth", goal: 20000, type: 'coins', reward: 400 },
+                { id: 302, text: "Grand Aviary", goal: 20, type: 'birds', reward: 550 },
+                { id: 303, text: "World Eater", goal: 2000, type: 'land', reward: 500 },
+                { id: 304, text: "Infinite Army", goal: 300, type: 'army', reward: 700 },
+                { id: 305, text: "Pika Billionaire", goal: 1000, type: 'pikaCoins', reward: 600 },
+                { id: 306, text: "Metropolis", goal: 100, type: 'hLimit', reward: 800 }
+            ]
+        };
 
         function updateUI() {
             document.getElementById('coins').innerText = Math.floor(state.coins);
@@ -207,61 +278,27 @@
             document.getElementById('enemyStr').innerText = state.enemyStrength;
         }
 
-        function saveGame(isAuto = false) { 
-            localStorage.setItem('pikaNation_Save_V2', JSON.stringify(state)); 
-            if (isAuto) {
-                const toast = document.getElementById('autosave-toast');
-                toast.style.opacity = "1";
-                setTimeout(() => { toast.style.opacity = "0"; }, 3000);
-            }
-        }
-
-        function manualSave() { saveGame(); alert("Base Progress Saved!"); }
-
-        function loadGame() { 
-            const saved = localStorage.getItem('pikaNation_Save_V2');
-            if(saved) { 
-                let data = JSON.parse(saved);
-                Object.assign(state, data);
-            }
-            checkReset(); updateUI();
-        }
-
         function checkReset() {
             const now = Date.now();
-            if (now - state.lastReset > 86400000) { 
-                state.activeMissionIDs = missionPool.sort(() => 0.5 - Math.random()).slice(0, 3).map(m => m.id);
-                state.completedMissions = [];
-                state.lastReset = now;
+            if (now - state.lastHourlyReset > 3600000) {
+                state.activeHourlyIDs = missionPool.hourly.sort(() => 0.5 - Math.random()).slice(0, 3).map(m => m.id);
+                state.lastHourlyReset = now;
+            }
+            if (now - state.lastDailyReset > 86400000) {
+                state.activeDailyIDs = missionPool.daily.sort(() => 0.5 - Math.random()).slice(0, 5).map(m => m.id);
+                state.lastDailyReset = now;
+            }
+            if (now - state.lastWeeklyReset > 604800000) {
+                state.activeWeeklyIDs = missionPool.weekly.sort(() => 0.5 - Math.random()).slice(0, 3).map(m => m.id);
+                state.lastWeeklyReset = now;
             }
         }
 
         function work() { state.coins += (10 + state.civilians * 5); updateUI(); }
-        
-        function layEgg() { 
-            if (state.coins >= 100 && state.civilians < state.housingSpace) { 
-                state.coins -= 100; state.civilians++; updateUI(); 
-            } else { alert("Need more housing space!"); }
-        }
-
-        function recruitSoldier() { 
-            if (state.coins >= 50 && state.civilians > 0) { 
-                state.coins -= 50; state.civilians--; state.soldiers++; updateUI(); 
-            } else { alert("Need civilians to recruit!"); }
-        }
-
-        function buyHouse(c, l, cap) { 
-            if (state.coins >= c && state.land >= l) { 
-                state.coins -= c; state.land -= l; state.housingSpace += cap; updateUI(); 
-            } else { alert("Insufficient Gold or Land!"); }
-        }
-
-        function buyMansion() {
-            if (state.coins >= 1500 && state.land >= 40 && state.pikaCoins >= 16) {
-                state.coins -= 1500; state.land -= 40; state.pikaCoins -= 16; state.housingSpace += 16; updateUI();
-            } else { alert("Requires 1500g, 40 Land, and 16 Pika!"); }
-        }
-
+        function layEgg() { if (state.coins >= 100 && state.civilians < state.housingSpace) { state.coins -= 100; state.civilians++; updateUI(); } else { alert("Need more housing space!"); } }
+        function recruitSoldier() { if (state.coins >= 50 && state.civilians > 0) { state.coins -= 50; state.civilians--; state.soldiers++; updateUI(); } else { alert("Need civilians to recruit!"); } }
+        function buyHouse(c, l, cap) { if (state.coins >= c && state.land >= l) { state.coins -= c; state.land -= l; state.housingSpace += cap; updateUI(); } else { alert("Insufficient Gold or Land!"); } }
+        function buyMansion() { if (state.coins >= 1500 && state.land >= 40 && state.pikaCoins >= 16) { state.coins -= 1500; state.land -= 40; state.pikaCoins -= 16; state.housingSpace += 16; updateUI(); } else { alert("Requires 1500g, 40 Land, and 16 Pika!"); } }
         function buyPikaCoins() { if (state.coins >= state.pikaPrice) { state.coins -= state.pikaPrice; state.pikaCoins += 50; state.pikaPrice *= 2; updateUI(); } }
 
         function conquer() {
@@ -275,87 +312,109 @@
         function doSpin() {
             if (state.pikaCoins < 50) { alert("Need 50 Pika to spin!"); return; }
             state.pikaCoins -= 50;
-            
             let r = Math.random() * 100, key, label;
-            
-            // Precise Probabilities from Ledger
             if (r < 0.01) { key = "mythic"; label = "MYTHIC"; }
-            else if (r < 0.6) { key = "legend_rare"; label = "LEGEND RARE"; }
+            else if (r < 0.60) { key = "legend_rare"; label = "LEGEND RARE"; } 
             else if (r < 10) { key = "ultra_super_rare"; label = "ULTRA SUPER RARE"; }
             else if (r < 40) { key = "super_rare"; label = "SUPER RARE"; }
             else { key = "rare"; label = "RARE"; }
             
             let name = birdPool[key][Math.floor(Math.random() * birdPool[key].length)];
-            state.birds.push({ 
-                name, 
-                rarity: key, 
-                rarityName: label, 
-                atk: Math.floor(Math.random()*50)+10, 
-                hp: Math.floor(Math.random()*100)+50 
-            });
-            
-            document.getElementById('spinResult').innerHTML = `Pulled: <span class="${key.replace(/_/g,"-")}">${label} ${name}</span>`;
-            updateUI();
-            saveGame();
+            const isDuplicate = state.birds.some(bird => bird.name === name);
+            let resultMessage = `Pulled: <span class="${key.replace(/_/g,"-")}">${label} ${name}</span>`;
+
+            if (isDuplicate && key !== "mythic") {
+                let comp = key === "rare" ? 20 : key === "super_rare" ? 40 : key === "ultra_super_rare" ? 80 : 150;
+                state.pikaCoins += comp;
+                resultMessage += `<br><span style="color:#d35400; font-size:14px;">DUPLICATE! +${comp} Pikas Reward</span>`;
+            } else {
+                state.birds.push({ name, rarity: key, rarityName: label, atk: Math.floor(Math.random()*50)+10, hp: Math.floor(Math.random()*100)+50 });
+            }
+            document.getElementById('spinResult').innerHTML = resultMessage;
+            updateUI(); saveGame();
         }
 
-        function openStorage() {
-            openModal('storageModal');
-            document.getElementById('fullCollection').innerHTML = state.birds.map((b, i) => `<div class="bird-item" onclick="viewBird(${i})">${i+1}. ${b.name}</div>`).join('');
-        }
-
-        function viewBird(i) {
-            const b = state.birds[i];
-            const fileName = b.name.toUpperCase().replace(/ /g, "_") + ".PNG";
-            document.getElementById('storageDetail').innerHTML = `
-                <img src="${fileName}" style="max-width:140px; margin-bottom:10px;" onerror="this.src='https://via.placeholder.com/120?text=BIRD'">
-                <div style="background:#4b3621; color:white; padding:10px; width:100%; border-radius:8px; font-size:12px;">
-                    <b class="${b.rarity.replace(/_/g,"-")}">${b.rarityName}</b><br>
-                    <span style="font-size:16px;">${b.name}</span><br>
-                    <div style="margin-top:5px; color:#f1c40f;">★★★★★★★</div>
-                    ⚔️ ${b.atk} | ❤️ ${b.hp}
-                </div>`;
+        function getUnit(type) {
+            const units = { 'coins': 'Gold', 'birds': 'Birds', 'army': 'Soldiers', 'land': 'Land', 'civilians': 'Pop', 'pikaCoins': 'Pika', 'hLimit': 'Housing' };
+            return units[type] || '';
         }
 
         function renderMissions() {
             const list = document.getElementById('missionList'); list.innerHTML = "";
-            state.activeMissionIDs.forEach(id => {
-                const m = missionPool.find(x => x.id === id);
-                let cur = (m.type==='coins'?state.coins : m.type==='birds'?state.birds.length : m.type==='army'?state.soldiers : state.land);
-                let done = state.completedMissions.includes(m.id);
-                list.innerHTML += `<div class="shop-item">
-                    <b>${m.text}</b> (${Math.floor(cur)}/${m.goal})<br>
-                    <button onclick="claimMission(${m.id})" ${(done || cur < m.goal)?'disabled':''} style="width:100%; margin-top:5px; background:${done?'#ccc':'#27ae60'};">
-                        ${done?'Claimed':'Claim '+m.reward+' Pika'}
-                    </button></div>`;
+            const cats = ['hourly', 'daily', 'weekly'];
+            const now = Date.now();
+            
+            cats.forEach(cat => {
+                const ids = state[cat === 'hourly' ? 'activeHourlyIDs' : cat === 'daily' ? 'activeDailyIDs' : 'activeWeeklyIDs'];
+                const last = state[cat === 'hourly' ? 'lastHourlyReset' : cat === 'daily' ? 'lastDailyReset' : 'lastWeeklyReset'];
+                const dur = cat === 'hourly' ? 3600000 : cat === 'daily' ? 86400000 : 604800000;
+                
+                if (ids.length > 0) {
+                    const diff = Math.max(0, dur - (now - last));
+                    const h = Math.floor(diff / 3600000), m = Math.floor((diff % 3600000) / 60000), s = Math.floor((diff % 60000) / 1000);
+
+                    list.innerHTML += `<div class="mission-header"><span>${cat.toUpperCase()}</span><span>${h}h ${m}m ${s}s</span></div>`;
+                    ids.forEach(id => {
+                        const mData = missionPool[cat].find(x => x.id === id);
+                        let cur = (mData.type === 'coins' ? state.coins : mData.type === 'birds' ? state.birds.length : mData.type === 'army' ? state.soldiers : mData.type === 'land' ? state.land : mData.type === 'civilians' ? state.civilians : mData.type === 'pikaCoins' ? state.pikaCoins : state.housingSpace);
+                        let done = state.completedMissions.includes(mData.id);
+                        let unit = getUnit(mData.type);
+                        
+                        list.innerHTML += `<div class="shop-item">
+                            <b>${mData.text}</b> <span style="font-size:11px; color:#8e735b;">[Need ${mData.goal} ${unit}]</span><br>
+                            Progress: ${Math.floor(cur)}/${mData.goal}<br>
+                            <button onclick="claimMission('${cat}', ${mData.id})" ${(done || cur < mData.goal)?'disabled':''} style="width:100%; margin-top:5px; background:${done?'#ccc':'#27ae60'};">${done?'Claimed':'Claim '+mData.reward+' Pika'}</button></div>`;
+                    });
+                }
             });
         }
 
-        function claimMission(id) {
-            let m = missionPool.find(x => x.id === id);
-            state.pikaCoins += m.reward; state.completedMissions.push(id);
+        function claimMission(cat, id) {
+            let mData = missionPool[cat].find(x => x.id === id);
+            state.pikaCoins += mData.reward; state.completedMissions.push(id);
             renderMissions(); updateUI(); saveGame();
         }
 
-        function openModal(id) { 
-            document.getElementById(id).style.display = "flex"; 
-            if(id==='missionModal') renderMissions(); 
-        }
-        
-        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+        function openStorage() { openModal('storageModal'); renderStorageGrid(); }
 
-        // Core Timers
-        setInterval(() => {
-            if (document.getElementById('missionModal').style.display === 'flex') {
-                let timeLeft = 86400000 - (Date.now() - state.lastReset);
-                let h = Math.floor(timeLeft / 3600000), m = Math.floor((timeLeft % 3600000) / 60000), s = Math.floor((timeLeft % 60000) / 1000);
-                document.getElementById('timer').innerText = `Rotating in: ${h}h ${m}m ${s}s`;
+        function renderStorageGrid(sortBy = 'default') {
+            const container = document.getElementById('fullCollection');
+            let displayBirds = [...state.birds];
+            if (sortBy === 'rarity') {
+                const order = { mythic: 0, legend_rare: 1, ultra_super_rare: 2, super_rare: 3, rare: 4 };
+                displayBirds.sort((a, b) => order[a.rarity] - order[b.rarity]);
             }
-        }, 1000);
+            container.innerHTML = displayBirds.map((b) => {
+                const imgPath = b.name.toUpperCase().replace(/ /g, "_") + ".PNG";
+                return `<div class="bird-tile tile-${b.rarity.replace(/_/g, "-")}" onclick="viewBirdByName('${b.name}')"><img src="${imgPath}" onerror="this.src='https://via.placeholder.com/50?text=🦜'"></div>`;
+            }).join('');
+        }
 
-        setInterval(() => { saveGame(true); }, 300000); // 5 Min Autosave
-        
-        // Boot Game
+        function viewBirdByName(name) {
+            const b = state.birds.find(bird => bird.name === name);
+            if (!b) return;
+            const f = b.name.toUpperCase().replace(/ /g, "_") + ".PNG";
+            document.getElementById('storageDetail').innerHTML = `
+                <div class="card-image-box"><img src="${f}" onerror="this.src='https://via.placeholder.com/200?text=🦜'"></div>
+                <div style="background:#4b3621; color:white; padding:15px; width:100%; border-radius:10px; font-size:12px; text-align:center;">
+                    <b class="${b.rarity.replace(/_/g,"-")}" style="font-size:14px;">${b.rarityName}</b>
+                    <span style="font-size:18px; display:block; margin: 6px 0; font-weight:bold;">${b.name}</span>
+                    <div style="color:#f1c40f; font-size:18px; letter-spacing: 2px; margin-bottom: 8px;">★★★★★★★</div>
+                    <div style="display:flex; justify-content:space-around; border-top:1px solid rgba(255,255,255,0.2); padding-top:10px; font-weight:bold;">
+                        <span>⚔️ ATK: ${b.atk}</span><span>❤️ HP: ${b.hp}</span>
+                    </div>
+                </div>`;
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = "flex"; if(id==='missionModal') renderMissions(); }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+        function saveGame(isAuto = false) { localStorage.setItem('pikaNation_Master_V3', JSON.stringify(state)); if (isAuto) { const t = document.getElementById('autosave-toast'); t.style.opacity = "1"; setTimeout(() => { t.style.opacity = "0"; }, 3000); } }
+        function manualSave() { saveGame(); alert("Base Progress Saved!"); }
+        function loadGame() { const s = localStorage.getItem('pikaNation_Master_V3'); if(s) { Object.assign(state, JSON.parse(s)); } checkReset(); updateUI(); }
+
+        setInterval(() => { if (document.getElementById('missionModal').style.display === 'flex') renderMissions(); }, 1000);
+        setInterval(() => { checkReset(); }, 60000);
+        setInterval(() => { saveGame(true); }, 300000);
         loadGame();
     </script>
 </body>
